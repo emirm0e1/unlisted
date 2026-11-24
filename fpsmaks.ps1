@@ -6,7 +6,7 @@ if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     if ($PSCommandPath) {
         Start-Process powershell -ArgumentList "-NoExit -NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
     } else {
-        $url = "https://raw.githubusercontent.com/opcinn/yuksekfps/main/yuksekfps.ps1"
+        $url = "https://raw.githubusercontent.com/emirm0e1/unlisted/refs/heads/main/fpsmaks.ps1"
         Start-Process powershell -ArgumentList "-NoExit -NoProfile -ExecutionPolicy Bypass -Command `"irm '$url' | iex`"" -Verb RunAs
     }
     exit
@@ -18,7 +18,7 @@ $ProgressPreference = 'SilentlyContinue'
 Clear-Host
 Write-Host "==================================================================" -ForegroundColor Cyan
 Write-Host "  __   ___   _  ___ _____ _____ _  __   _____ ___  ____  " -ForegroundColor Green
-Write-Host "  \ \ / / | | |/ገል/| ____| ____| |/ /  |  ___| _ \/ ___| " -ForegroundColor Green
+Write-Host "  \ \ / / | | |/  /| ____| ____| |/ /  |  ___| _ \/ ___| " -ForegroundColor Green
 Write-Host "   \ V /| | | | ' / |  _| |  _| | ' /   | |_  | |_) \___ \ " -ForegroundColor Green
 Write-Host "    | | | |_| | . \ | |___| |___| . \   |  _| |  __/ ___) |" -ForegroundColor Green
 Write-Host "    |_|  \___/|_|\_\|_____|_____|_|\_\  |_|   |_|   |____/ " -ForegroundColor Green
@@ -123,17 +123,6 @@ Set-Reg -Path "HKCU:\Control Panel\Mouse" -Name "MouseThreshold1" -Type "String"
 Set-Reg -Path "HKCU:\Control Panel\Mouse" -Name "MouseThreshold2" -Type "String" -Value "0"
 
 Write-Host ">>> [30/46] ADIM: Oyun Optimizasyonlari (GameDVR Off, FSO & HAGS ON)..." -ForegroundColor Yellow
-Set-Reg -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Value 0
-Set-Reg -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Value 0
-Set-Reg -Path "HKCU:\Software\Microsoft\GameBar" -Name "AutoGameModeEnabled" -Value 1
-
-# Fullscreen Optimizations (FSO)
-Set-Reg -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_DXGIHonorFSEWindowsCompatible" -Value 0
-Set-Reg -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_FSEBehaviorMode" -Value 0
-Remove-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_FSEBehavior" -ErrorAction SilentlyContinue
-Set-Reg -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_HonorUserFSEBehaviorMode" -Value 0
-
-# Windowed Games Optimizations
 Set-Reg -Path "HKCU:\Software\Microsoft\DirectX\UserGpuPreferences" -Name "DirectXUserGlobalSettings" -Type "String" -Value "VRROptimizeEnable=0;SwapEffectUpgradeEnable=1;"
 
 Set-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" -Name "NetworkThrottlingIndex" -Value 4294967295
@@ -145,16 +134,6 @@ Set-Reg -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\Sys
 # GPU Hardware-Accelerated GPU Scheduling (HAGS) & Timer
 Set-Reg -Path "HKLM:\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" -Name "HwSchMode" -Value 2
 Set-Reg -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" -Name "GlobalTimerResolutionRequests" -Value 1
-
-Write-Host ">>> [31/46] ADIM: Multiplane Overlay (MPO) Etkinlestiriliyor..." -ForegroundColor Yellow
-Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\Dwm" -Name "OverlayTestMode" -ErrorAction SilentlyContinue
-
-Write-Host ">>> [32/46] ADIM: Ağ Gecikmesi Dusuruluyor (Nagle Algoritmasi Kapatiliyor)..." -ForegroundColor Yellow
-$netInterfaces = Get-ChildItem "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces"
-foreach ($interface in $netInterfaces) {
-    Set-Reg -Path $interface.PSPath -Name "TcpAckFrequency" -Value 1
-    Set-Reg -Path $interface.PSPath -Name "TCPNoDelay" -Value 1
-}
 
 Write-Host ">>> [33/46] ADIM: Gizlilik Sikilastirmalari Yapiliyor..." -ForegroundColor Yellow
 $consentPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore"
@@ -175,11 +154,6 @@ cmd /c "powercfg /duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 $pGuid >n
 cmd /c "powercfg /changename $pGuid `"YuksekFPS`" >nul 2>&1"
 cmd /c "powercfg /SETACTIVE $pGuid >nul 2>&1"
 
-Write-Host ">>> [35/46] ADIM: Uyku ve Guc Kısıtlamalari Kapatiliyor..." -ForegroundColor Yellow
-powercfg /hibernate off
-Set-Reg -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Power" -Name "HibernateEnabled" -Value 0
-Set-Reg -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling" -Name "PowerThrottlingOff" -Value 1
-
 Write-Host ">>> [36/46] ADIM: USB Guc Tasarrufu Kapatiliyor..." -ForegroundColor Yellow
 Set-Reg -Path "HKLM:\System\ControlSet001\Control\Power\PowerSettings\2a737441-1930-4402-8d77-b2bebba308a3\0853a681-27c8-4100-a2fd-82013e970683" -Name "Attributes" -Value 0
 powercfg /setacvalueindex $pGuid 2a737441-1930-4402-8d77-b2bebba308a3 0853a681-27c8-4100-a2fd-82013e970683 0x00000000 2>$null
@@ -187,11 +161,6 @@ powercfg /setacvalueindex $pGuid 2a737441-1930-4402-8d77-b2bebba308a3 0853a681-2
 Write-Host ">>> [37/46] ADIM: Islemci Cekirdek Parki Kapatiliyor (%100 Güc)..." -ForegroundColor Yellow
 powercfg /setacvalueindex $pGuid 54533251-82be-4824-96c1-47b60b740d00 893dee8e-2bef-41e0-89c6-b55d0929964c 0x00000064 2>$null
 powercfg /setacvalueindex $pGuid 54533251-82be-4824-96c1-47b60b740d00 bc5038f7-23e0-4960-96da-33abaf5935ec 0x00000064 2>$null
-
-Write-Host ">>> [38/46] ADIM: Kesme Yonetimi Modu Islemci 0 Olarak Ayarlaniyor..." -ForegroundColor Yellow
-Set-Reg -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\48672f38-7a9a-4bb2-8bf8-3d85be19de4e\2bfc24f9-5ea2-4801-8213-3dbae01aa39d" -Name "Attributes" -Value 2
-powercfg /setacvalueindex $pGuid 48672f38-7a9a-4bb2-8bf8-3d85be19de4e 2bfc24f9-5ea2-4801-8213-3dbae01aa39d 5 2>$null
-powercfg /setdcvalueindex $pGuid 48672f38-7a9a-4bb2-8bf8-3d85be19de4e 2bfc24f9-5ea2-4801-8213-3dbae01aa39d 5 2>$null
 
 Write-Host ">>> [39/46] ADIM: Ekran Kartı Guc Performansi Maksimuma Aliniyor..." -ForegroundColor Yellow
 powercfg /setacvalueindex $pGuid 44f3beca-a7c0-460e-9df2-bb8b99e0cba6 3619c3f2-afb2-4afc-b0e9-e7fef372de36 002 2>$null
@@ -201,7 +170,7 @@ Write-Host ""
 Write-Host "==================================================================" -ForegroundColor Green
 Write-Host "    YUKSEK FPS OPTIMIZASYONU BASARIYLA TAMAMLANDI!              " -ForegroundColor Green
 Write-Host "==================================================================" -ForegroundColor Green
-Write-Host "                         Optimizasyon by opcin                    " -ForegroundColor Cyan
+Write-Host "                         Optimizasyon by emir                    " -ForegroundColor Cyan
 Write-Host "==================================================================" -ForegroundColor Green
 Write-Host ""
 Write-Host "Degisikliklerin tam etkili olmasi icin bilgisayari yeniden baslatin." -ForegroundColor Cyan
